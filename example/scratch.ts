@@ -1,6 +1,6 @@
-import {StatesOfTabletopGame, TabletopGame} from "./TabletopGame";
-import {TeamsModule} from "./module/TeamsModule";
-import {SimplePhaseModule} from "./module/SimplePhaseModule";
+import {StatesOfTabletopGame, TabletopGame} from "../src/deprecate/TabletopGame";
+import {TeamsModule} from "../src/deprecate/module/TeamsModule";
+import {SimplePhaseModule} from "../src/deprecate/module/SimplePhaseModule";
 
 type MyStateMap = {
     preparation: {},
@@ -24,15 +24,15 @@ const game = TabletopGame
 
 export const startGame = game.addAction({
     name: "startGame",
-    checks: ["isEveryTeamReady", "phaseIs_preparation"],
+    checks: ["isEveryTeamReady", "phaseIs_preparation", (opts) => true],
     action: ({}, timer: number) => {
         game.modules.phase.getPhase()
         game.modules.phase.setPhase("playing", {currentPlayerTurn: "X"})
-        console.log("Game started")
+        game.modules.teams.assignPlayer("MYXOMOPX", "spectator_team")
     }
 })
 
-game.checks
+
 // export const startGame = game.getAction("startGame");
 
 

@@ -1,11 +1,21 @@
 {
   "name": "@flinbein/varhub-tabletop-framework",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MYXOMOPX",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@flinbein/varhub-web-client": "git+https://github.com/flinbein/varhub-web-client.git#2.3.2"
+  },
+  "devDependencies": {
+    "@flinbein/rollup-plugin-varhub-bundle": "github:flinbein/rollup-plugin-varhub-bundle",
+    "@types/node": "^22.9.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "^4.3.0"
+  }
 }

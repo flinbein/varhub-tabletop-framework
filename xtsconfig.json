@@ -1,0 +1,9 @@
+{
+  "exclude": ["./example"],
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true
+  }
+}

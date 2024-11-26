@@ -1,5 +1,4 @@
-import {ModuleWithState} from "./ModuleWithState";
-import {CheckUnavailableFunction, CheckUnavailableFunctionMap, IModuleWithChecks} from "../types";
+import {StateNotifier} from "./util/StateNotifier";
 
 interface PlayerTeamAssignment<ROLE extends string> {
     teamId: string|number;
@@ -17,13 +16,6 @@ interface Team<PROPERTIES = Record<string, string>> {
 interface TeamsModuleConfig<ROLE extends string> {
     defaultRole?: ROLE
     teams?: Array<Team>
-    checkParams?: TeamsModuleReadyCheckOpts<ROLE>
-}
-
-interface TeamsModuleReadyCheckOpts<ROLE extends string = string> {
-    minPlayersInEachTeam: number,
-    everyTeamRequiredRoles: ROLE[],
-    moduleName?: string;
 }
 
 
@@ -32,25 +24,25 @@ export interface TeamsModuleState<ROLE extends string = string> {
     assignments: PlayerAssignmentsMap<ROLE>
 }
 
-export class TeamsModule<
-    ROLE extends string = string
-> extends ModuleWithState<TeamsModuleState<ROLE>> implements IModuleWithChecks<"isEveryTeamReady"> {
-    static defaultModuleName: "teams" = "teams";
+export class TabletopModule<ROLE extends string> extends StateNotifier<TeamsModuleState<ROLE>> {
 
     protected teams: Array<Team> = [];
     protected playerAssignments: PlayerAssignmentsMap<ROLE> = {};
-    protected config: TeamsModuleConfig<ROLE>;
+    protected defaultRole: ROLE;
 
-    serializeStateForPlayer(player: string, game: any) {
+    constructor(config: TeamsModuleConfig<ROLE> = {}) {
+        super();
+        if (config) {
+            this.defaultRole = config.defaultRole;
+            this.teams = config.teams;
+        }
+    }
+
+    get state() {
         return {
             teams: this.teams,
             assignments: this.playerAssignments
         }
-    }
-
-    constructor(config: TeamsModuleConfig<ROLE> = {}) {
-        super();
-        if (config) this.config = config
     }
 
     getTeamById(id: string): Team|null {
@@ -64,11 +56,13 @@ export class TeamsModule<
 
 
     public assignPlayer(player: string, teamId: string, role?: ROLE) {
-        this.playerAssignments[player] = {teamId, role: role || this.config.defaultRole}
+        this.playerAssignments[player] = {teamId, role: role || this.defaultRole}
+        this.notifyStateChange();
     }
 
     public removePlayerAssignment(player: string) {
-        delete this.playerAssignments[player]
+        delete this.playerAssignments[player];
+        this.notifyStateChange();
     }
 
     public getPlayersCount(teamId?: string) {
@@ -90,22 +84,5 @@ export class TeamsModule<
 
     public isTeamHasPlayerInRole(teamId: string, role: ROLE): boolean {
         return Object.values(this.playerAssignments).some(assignment => assignment.teamId === teamId && assignment.role === role);
-    }
-
-    private check_IsEveryTeamReady(player: string, game: any){
-        if (!this.config.checkParams) return false;
-        const notReadyTeams = this.teams.map(it => it.id).filter(teamId => {
-            const enoughPlayers = this.getPlayersCount(teamId) >= this.config.checkParams.minPlayersInEachTeam;
-            const hasRoles = this.config.checkParams.everyTeamRequiredRoles.every((role) => this.isTeamHasPlayerInRole(teamId, role));
-            return !enoughPlayers || !hasRoles;
-        });
-
-        return notReadyTeams.length > 0 && `Teams not ready: ${notReadyTeams.join(", ")}`;
-    }
-
-    getCheckFunctionMap(): CheckUnavailableFunctionMap<"isEveryTeamReady"> {
-        return {
-            isEveryTeamReady: this.check_IsEveryTeamReady
-        }
     }
 }
