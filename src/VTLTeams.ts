@@ -13,24 +13,24 @@ interface Team<PROPERTIES = Record<string, string>> {
     properties: PROPERTIES
 }
 
-interface TeamsModuleConfig<ROLE extends string> {
+interface VTLTeamsConfig<ROLE extends string> {
     defaultRole?: ROLE
     teams?: Array<Team>
 }
 
 
-export interface TeamsModuleState<ROLE extends string = string> {
+export interface VTLTeamsState<ROLE extends string = string> {
     teams: Array<Team>
     assignments: PlayerAssignmentsMap<ROLE>
 }
 
-export class TabletopModule<ROLE extends string> extends StateNotifier<TeamsModuleState<ROLE>> {
+export class VTLTeams<ROLE extends string> extends StateNotifier<VTLTeamsState<ROLE>> {
 
     protected teams: Array<Team> = [];
     protected playerAssignments: PlayerAssignmentsMap<ROLE> = {};
     protected defaultRole: ROLE;
 
-    constructor(config: TeamsModuleConfig<ROLE> = {}) {
+    constructor(config: VTLTeamsConfig<ROLE> = {}) {
         super();
         if (config) {
             this.defaultRole = config.defaultRole;
