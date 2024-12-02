@@ -49,6 +49,9 @@ class f extends p {
   isTeamHasPlayerInRole(t, e) {
     return Object.values(this.playerAssignments).some((i) => i.teamId === t && i.role === e);
   }
+  setTeamProperties(t, e) {
+    this.getTeamById(t).properties = e, this.notifyStateChange();
+  }
 }
 const h = Symbol("notify"), a = Symbol("action-descriptors-map"), l = Symbol("local-notify"), m = (s) => function(e) {
   return e.prototype[h] = function() {

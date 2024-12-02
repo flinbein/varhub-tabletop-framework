@@ -13,24 +13,24 @@ interface Team<PROPERTIES = Record<string, string>> {
     properties: PROPERTIES
 }
 
-interface VTLTeamsConfig<ROLE extends string> {
+interface VTLTeamsConfig<ROLE extends string, PROPERTIES> {
     defaultRole?: ROLE
-    teams?: Array<Team>
+    teams?: Array<Team<PROPERTIES>>
 }
 
 
-export interface VTLTeamsState<ROLE extends string = string> {
-    teams: Array<Team>
+export interface VTLTeamsState<ROLE extends string = string, PROPERTIES = any> {
+    teams: Array<Team<PROPERTIES>>
     assignments: PlayerAssignmentsMap<ROLE>
 }
 
-export class VTLTeams<ROLE extends string> extends StateNotifier<VTLTeamsState<ROLE>> {
+export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifier<VTLTeamsState<ROLE, PROPERTIES>> {
 
-    protected teams: Array<Team> = [];
+    protected teams: Array<Team<PROPERTIES>> = [];
     protected playerAssignments: PlayerAssignmentsMap<ROLE> = {};
     protected defaultRole: ROLE;
 
-    constructor(config: VTLTeamsConfig<ROLE> = {}) {
+    constructor(config: VTLTeamsConfig<ROLE, PROPERTIES> = {}) {
         super();
         if (config) {
             this.defaultRole = config.defaultRole;
@@ -45,7 +45,7 @@ export class VTLTeams<ROLE extends string> extends StateNotifier<VTLTeamsState<R
         }
     }
 
-    getTeamById(id: string): Team|null {
+    getTeamById(id: string): Team<PROPERTIES>|null {
         return this.teams.find((team) => team.id === id) || null
     }
 
@@ -84,5 +84,10 @@ export class VTLTeams<ROLE extends string> extends StateNotifier<VTLTeamsState<R
 
     public isTeamHasPlayerInRole(teamId: string, role: ROLE): boolean {
         return Object.values(this.playerAssignments).some(assignment => assignment.teamId === teamId && assignment.role === role);
+    }
+
+    public setTeamProperties(teamId: string, properties: PROPERTIES) {
+        this.getTeamById(teamId).properties = properties;
+        this.notifyStateChange();
     }
 }

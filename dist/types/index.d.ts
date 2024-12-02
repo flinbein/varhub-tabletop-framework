@@ -46,16 +46,16 @@ export declare const VTLCallOnActionsUpdate: <FN extends (this: any, getAvailabl
  */
 export declare const VTLClassWithActions: (onChange: ObserveOnChangeFn) => <CONSTRUCTOR extends Function>(constructor: CONSTRUCTOR) => CONSTRUCTOR;
 
-export declare class VTLTeams<ROLE extends string> extends StateNotifier<VTLTeamsState<ROLE>> {
-    protected teams: Array<Team>;
+export declare class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifier<VTLTeamsState<ROLE, PROPERTIES>> {
+    protected teams: Array<Team<PROPERTIES>>;
     protected playerAssignments: PlayerAssignmentsMap<ROLE>;
     protected defaultRole: ROLE;
-    constructor(config?: VTLTeamsConfig<ROLE>);
+    constructor(config?: VTLTeamsConfig<ROLE, PROPERTIES>);
     get state(): {
-        teams: Team<Record<string, string>>[];
+        teams: Team<PROPERTIES>[];
         assignments: PlayerAssignmentsMap<ROLE>;
     };
-    getTeamById(id: string): Team | null;
+    getTeamById(id: string): Team<PROPERTIES> | null;
     getPlayerAssigment(player: string): PlayerTeamAssignment<ROLE>;
     assignPlayer(player: string, teamId: string, role?: ROLE): void;
     removePlayerAssignment(player: string): void;
@@ -64,15 +64,16 @@ export declare class VTLTeams<ROLE extends string> extends StateNotifier<VTLTeam
     isPlayerInRole(player: string, role: ROLE): boolean;
     isPlayerInTeamAndRole(player: string, teamId: string, role: ROLE): boolean;
     isTeamHasPlayerInRole(teamId: string, role: ROLE): boolean;
+    setTeamProperties(teamId: string, properties: PROPERTIES): void;
 }
 
-declare interface VTLTeamsConfig<ROLE extends string> {
+declare interface VTLTeamsConfig<ROLE extends string, PROPERTIES> {
     defaultRole?: ROLE;
-    teams?: Array<Team>;
+    teams?: Array<Team<PROPERTIES>>;
 }
 
-export declare interface VTLTeamsState<ROLE extends string = string> {
-    teams: Array<Team>;
+export declare interface VTLTeamsState<ROLE extends string = string, PROPERTIES = any> {
+    teams: Array<Team<PROPERTIES>>;
     assignments: PlayerAssignmentsMap<ROLE>;
 }
 
