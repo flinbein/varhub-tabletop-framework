@@ -86,6 +86,14 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
         return Object.values(this.playerAssignments).some(assignment => assignment.teamId === teamId && assignment.role === role);
     }
 
+    public getAllPlayersInRole(role: ROLE, teamId?: string): string[] {
+        return Object.entries(this.playerAssignments)
+            .filter(([player, assignment]) => {
+                return assignment.role === role && (teamId === undefined || assignment.teamId === teamId)
+            })
+            .map(e => e[0]);
+    }
+
     public setTeamProperties(teamId: string, properties: PROPERTIES) {
         this.getTeamById(teamId).properties = properties;
         this.notifyStateChange();

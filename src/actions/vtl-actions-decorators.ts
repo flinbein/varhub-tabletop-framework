@@ -84,7 +84,7 @@ export const VTLAction = (name: string, checkAvailable: IsActionAvailableFn) => 
 }
 
 export  function VTLActionsDependsOn<
-    CTX extends ClassMethodDecoratorContext | ClassSetterDecoratorContext | ClassAccessorDecoratorContext
+    CTX extends ClassMethodDecoratorContext<any> | ClassSetterDecoratorContext<any> | ClassAccessorDecoratorContext<any>
 >(value: unknown, context: CTX): any {
     if (context.kind === "method" || context.kind === "setter") {
         return function (...args) {
