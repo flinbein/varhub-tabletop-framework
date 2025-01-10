@@ -7,7 +7,7 @@ declare type ObserveOnChangeFn = (getAvailableActions: GetActionsForContext) => 
 declare type PlayerAssignmentsMap<ROLE extends string> = Record<string, PlayerTeamAssignment<ROLE>>;
 
 declare interface PlayerTeamAssignment<ROLE extends string> {
-    teamId: string | number;
+    teamId: number | null;
     role: ROLE | null;
 }
 
@@ -57,15 +57,16 @@ export declare class VTLTeams<ROLE extends string, PROPERTIES = any> extends Sta
     };
     getTeamById(id: string): Team<PROPERTIES> | null;
     getPlayerAssigment(player: string): PlayerTeamAssignment<ROLE>;
-    assignPlayer(player: string, teamId: string, role?: ROLE): void;
+    assignPlayer(player: string, teamId: number, role?: ROLE): void;
     removePlayerAssignment(player: string): void;
-    getPlayersCount(teamId?: string): number;
-    isPlayerInTeam(player: string, teamId: string): boolean;
+    getPlayersCount(teamId?: number): number;
+    isPlayerInTeam(player: string, teamId: number): boolean;
     isPlayerInRole(player: string, role: ROLE): boolean;
-    isPlayerInTeamAndRole(player: string, teamId: string, role: ROLE): boolean;
-    isTeamHasPlayerInRole(teamId: string, role: ROLE): boolean;
-    getAllPlayersInRole(role: ROLE, teamId?: string): string[];
+    isPlayerInTeamAndRole(player: string, teamId: number, role: ROLE): boolean;
+    isTeamHasPlayerInRole(teamId: number, role: ROLE): boolean;
+    getAllPlayersInRole(role: ROLE, teamId?: number): string[];
     setTeamProperties(teamId: string, properties: PROPERTIES): void;
+    getTeams(): Team<PROPERTIES>[];
 }
 
 declare interface VTLTeamsConfig<ROLE extends string, PROPERTIES> {

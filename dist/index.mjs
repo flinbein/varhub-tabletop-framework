@@ -55,6 +55,9 @@ class f extends p {
   setTeamProperties(t, e) {
     this.getTeamById(t).properties = e, this.notifyStateChange();
   }
+  getTeams() {
+    return this.teams;
+  }
 }
 const h = Symbol("notify"), a = Symbol("action-descriptors-map"), l = Symbol("local-notify"), m = (n) => function(e) {
   return e.prototype[h] = function() {
