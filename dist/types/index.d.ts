@@ -22,7 +22,7 @@ export declare abstract class StateNotifier<STATE> {
 }
 
 declare interface Team<PROPERTIES = Record<string, string>> {
-    id: string;
+    id: number;
     displayName: string;
     properties: PROPERTIES;
 }

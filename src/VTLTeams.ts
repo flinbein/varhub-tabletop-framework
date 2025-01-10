@@ -8,7 +8,7 @@ interface PlayerTeamAssignment<ROLE extends string> {
 type PlayerAssignmentsMap<ROLE extends string> = Record<string, PlayerTeamAssignment<ROLE>>
 
 interface Team<PROPERTIES = Record<string, string>> {
-    id: string;
+    id: number;
     displayName: string;
     properties: PROPERTIES
 }
@@ -45,7 +45,7 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
         }
     }
 
-    getTeamById(id: string): Team<PROPERTIES>|null {
+    getTeamById(id: number): Team<PROPERTIES>|null {
         return this.teams.find((team) => team.id === id) || null
     }
 
