@@ -1,7 +1,7 @@
 import {StateNotifier} from "./util/StateNotifier";
 
 interface PlayerTeamAssignment<ROLE extends string> {
-    teamId: string|number;
+    teamId: number|null;
     role: ROLE|null
 }
 
@@ -55,7 +55,7 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
 
 
 
-    public assignPlayer(player: string, teamId: string, role?: ROLE) {
+    public assignPlayer(player: string, teamId: number, role?: ROLE) {
         this.playerAssignments[player] = {teamId, role: role || this.defaultRole}
         this.notifyStateChange();
     }
@@ -65,12 +65,12 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
         this.notifyStateChange();
     }
 
-    public getPlayersCount(teamId?: string) {
+    public getPlayersCount(teamId?: number) {
         if (!teamId) return Object.keys(this.playerAssignments).length
         return Object.values(this.playerAssignments).filter(assignment => assignment.teamId === teamId).length
     }
 
-    public isPlayerInTeam(player: string, teamId: string): boolean {
+    public isPlayerInTeam(player: string, teamId: number): boolean {
         return this.playerAssignments[player]?.teamId === teamId;
     }
 
@@ -78,15 +78,15 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
         return this.playerAssignments[player]?.role === role;
     }
 
-    public isPlayerInTeamAndRole(player: string, teamId: string, role: ROLE): boolean {
+    public isPlayerInTeamAndRole(player: string, teamId: number, role: ROLE): boolean {
         return this.isPlayerInTeam(player, teamId) && this.isPlayerInRole(player, role)
     }
 
-    public isTeamHasPlayerInRole(teamId: string, role: ROLE): boolean {
+    public isTeamHasPlayerInRole(teamId: number, role: ROLE): boolean {
         return Object.values(this.playerAssignments).some(assignment => assignment.teamId === teamId && assignment.role === role);
     }
 
-    public getAllPlayersInRole(role: ROLE, teamId?: string): string[] {
+    public getAllPlayersInRole(role: ROLE, teamId?: number): string[] {
         return Object.entries(this.playerAssignments)
             .filter(([player, assignment]) => {
                 return assignment.role === role && (teamId === undefined || assignment.teamId === teamId)
@@ -97,5 +97,9 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
     public setTeamProperties(teamId: string, properties: PROPERTIES) {
         this.getTeamById(teamId).properties = properties;
         this.notifyStateChange();
+    }
+
+    public getTeams() {
+        return this.teams;
     }
 }
