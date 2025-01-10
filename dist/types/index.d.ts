@@ -36,7 +36,7 @@ export declare const VTLAction: (name: string, checkAvailable: IsActionAvailable
     <T>(originalValue: T, context: ClassFieldDecoratorContext<any>): any;
 };
 
-export declare function VTLActionsDependsOn<CTX extends ClassMethodDecoratorContext<any> | ClassSetterDecoratorContext<any> | ClassAccessorDecoratorContext<any>>(value: unknown, context: CTX): any;
+export declare function VTLActionsDependsOn<CTX extends ClassMethodDecoratorContext<any> | ClassSetterDecoratorContext<any> | ClassAccessorDecoratorContext<any> | ClassFieldDecoratorContext<any, Function>>(value: unknown, context: CTX): any;
 
 export declare const VTLCallOnActionsUpdate: <FN extends (this: any, getAvailableActions: GetActionsForContext) => void>(originalValue: FN, context: ClassMethodDecoratorContext<any, FN>) => void;
 
@@ -55,7 +55,7 @@ export declare class VTLTeams<ROLE extends string, PROPERTIES = any> extends Sta
         teams: Team<PROPERTIES>[];
         assignments: PlayerAssignmentsMap<ROLE>;
     };
-    getTeamById(id: string): Team<PROPERTIES> | null;
+    getTeamById(id: number): Team<PROPERTIES> | null;
     getPlayerAssigment(player: string): PlayerTeamAssignment<ROLE>;
     assignPlayer(player: string, teamId: number, role?: ROLE): void;
     removePlayerAssignment(player: string): void;

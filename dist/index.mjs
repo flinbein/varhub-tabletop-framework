@@ -1,4 +1,4 @@
-class p {
+class y {
   constructor() {
     this.stateListeners = [], this.notifyStateChange = () => {
       for (let t = this.stateListeners.length - 1; t >= 0; t--)
@@ -12,7 +12,7 @@ class p {
     this.stateListeners.splice(this.stateListeners.indexOf(t), 1);
   }
 }
-class f extends p {
+class f extends y {
   constructor(t = {}) {
     super(), this.teams = [], this.playerAssignments = {}, t && (this.defaultRole = t.defaultRole, this.teams = t.teams);
   }
@@ -50,7 +50,7 @@ class f extends p {
     return Object.values(this.playerAssignments).some((s) => s.teamId === t && s.role === e);
   }
   getAllPlayersInRole(t, e) {
-    return Object.entries(this.playerAssignments).filter(([s, i]) => i.role === t && (e === void 0 || i.teamId === e)).map((s) => s[0]);
+    return Object.entries(this.playerAssignments).filter(([s, n]) => n.role === t && (e === void 0 || n.teamId === e)).map((s) => s[0]);
   }
   setTeamProperties(t, e) {
     this.getTeamById(t).properties = e, this.notifyStateChange();
@@ -59,66 +59,75 @@ class f extends p {
     return this.teams;
   }
 }
-const h = Symbol("notify"), a = Symbol("action-descriptors-map"), l = Symbol("local-notify"), m = (n) => function(e) {
-  return e.prototype[h] = function() {
+const u = Symbol("notify"), a = Symbol("action-descriptors-map"), l = Symbol("local-notify"), d = (i) => function(e) {
+  return e.prototype[u] = function() {
     const s = Object.keys(e.prototype[a] || {});
-    n.call(this, (i) => s.filter((r) => e.prototype[a][r].call(this, i)));
+    i.call(this, (n) => s.filter((r) => e.prototype[a][r].call(this, n)));
   }, e;
-}, d = (n, t) => {
+}, m = (i, t) => {
   t.addInitializer(function() {
     const e = this[l] || [];
     e.push(function() {
       const s = Object.keys(this.constructor.prototype[a] || {});
-      this[t.name].call(this, (i) => s.filter((r) => this.constructor.prototype[a][r].call(this, i)));
+      this[t.name].call(this, (n) => s.filter((r) => this.constructor.prototype[a][r].call(this, n)));
     }), this[l] = e;
   });
-}, g = (n, t) => {
-  function e(s, i) {
-    if (i.addInitializer(function() {
+}, g = (i, t) => {
+  function e(s, n) {
+    if (n.addInitializer(function() {
       const r = this.constructor.prototype[a] || {};
-      if (r[n] !== void 0) throw new Error("You can't use same action name twice: " + n);
-      if (r[n] = t, this.constructor.prototype[a] = r, i.kind === "method") {
+      if (r[i] !== void 0) throw new Error("You can't use same action name twice: " + i);
+      if (r[i] = t, this.constructor.prototype[a] = r, n.kind === "method") {
         const o = this;
-        this[i.name] = function(...u) {
-          if (!t.call(o, this)) throw new Error(`Action ${n} is unavailable`);
-          return Object.getPrototypeOf(o)[i.name].apply(this, u);
+        this[n.name] = function(...c) {
+          if (!t.call(o, this)) throw new Error(`Action ${i} is unavailable`);
+          return Object.getPrototypeOf(o)[n.name].apply(this, c);
         };
       }
-    }), i.kind === "field")
+    }), n.kind === "field")
       return function(o) {
-        const c = this;
-        if (typeof o != "function") throw new Error(`You can't decorate non-function fields with VTLAction(${n})`);
-        return function(...y) {
-          if (!t.call(c, this)) throw new Error(`Action ${n} is unavailable`);
-          return o.apply(this, y);
+        const h = this;
+        if (typeof o != "function") throw new Error(`You can't decorate non-function fields with VTLAction(${i})`);
+        return function(...p) {
+          if (!t.call(h, this)) throw new Error(`Action ${i} is unavailable`);
+          return o.apply(this, p);
         };
       };
   }
   return e;
 };
-function A(n, t) {
+function A(i, t) {
   if (t.kind === "method" || t.kind === "setter")
     return function(...e) {
-      const s = n.apply(this, e);
-      return this[l]?.forEach((i) => i.call(this)), this.constructor.prototype[h]?.call?.(this), s;
+      const s = i.apply(this, e);
+      return this[l]?.forEach((n) => n.call(this)), this.constructor.prototype[u]?.call?.(this), s;
     };
   if (t.kind === "accessor") {
-    const e = n;
+    const e = i;
     return {
       ...e,
-      set: function(i) {
-        const r = e.set.call(this, i, i);
-        return this[l]?.forEach((o) => o.call(this)), this.constructor.prototype[h]?.call?.(this), r;
+      set: function(n) {
+        const r = e.set.call(this, n, n);
+        return this[l]?.forEach((o) => o.call(this)), this.constructor.prototype[u]?.call?.(this), r;
       }
     };
   }
+  if (t.kind === "field" && typeof i == "function")
+    return function(s) {
+      const n = this;
+      if (typeof s != "function") throw new Error(`You can't decorate non-function fields with VTLActionsDependsOn(${name})`);
+      return function(...o) {
+        const h = s.apply(this, o);
+        return n[l]?.forEach((c) => c.call(this)), n.constructor.prototype[u]?.call?.(this), h;
+      };
+    };
   throw new Error("You put VTLActionObserve only on method, setter or accessor");
 }
 export {
-  p as StateNotifier,
+  y as StateNotifier,
   g as VTLAction,
   A as VTLActionsDependsOn,
-  d as VTLCallOnActionsUpdate,
-  m as VTLClassWithActions,
+  m as VTLCallOnActionsUpdate,
+  d as VTLClassWithActions,
   f as VTLTeams
 };

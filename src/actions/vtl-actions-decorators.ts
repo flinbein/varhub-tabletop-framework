@@ -84,7 +84,7 @@ export const VTLAction = (name: string, checkAvailable: IsActionAvailableFn) => 
 }
 
 export  function VTLActionsDependsOn<
-    CTX extends ClassMethodDecoratorContext<any> | ClassSetterDecoratorContext<any> | ClassAccessorDecoratorContext<any>
+    CTX extends ClassMethodDecoratorContext<any> | ClassSetterDecoratorContext<any> | ClassAccessorDecoratorContext<any> | ClassFieldDecoratorContext<any, Function>
 >(value: unknown, context: CTX): any {
     if (context.kind === "method" || context.kind === "setter") {
         return function (...args) {
@@ -107,6 +107,22 @@ export  function VTLActionsDependsOn<
                 return rez;
             }
         };
+    }
+
+    if (context.kind === "field" && typeof value === "function") {
+        return function initializer(initialFunction) {
+            const that = this;
+            if (typeof initialFunction !== "function") throw new Error(`You can't decorate non-function fields with VTLActionsDependsOn(${name})`);
+
+            return function resultMethod(this: any, ...args) {
+                const rez = (initialFunction as Function).apply(this, args);
+
+                that[localNotifyFnSymbol]?.forEach(fn => fn.call(this));
+                that.constructor.prototype[notifyFnSymbol]?.call?.(this);
+
+                return rez;
+            }
+        }
     }
 
     throw new Error("You put VTLActionObserve only on method, setter or accessor")
