@@ -94,7 +94,7 @@ export class VTLTeams<ROLE extends string, PROPERTIES = any> extends StateNotifi
             .map(e => e[0]);
     }
 
-    public setTeamProperties(teamId: string, properties: PROPERTIES) {
+    public setTeamProperties(teamId: number, properties: PROPERTIES) {
         this.getTeamById(teamId).properties = properties;
         this.notifyStateChange();
     }

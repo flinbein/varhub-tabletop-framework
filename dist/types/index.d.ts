@@ -65,7 +65,7 @@ export declare class VTLTeams<ROLE extends string, PROPERTIES = any> extends Sta
     isPlayerInTeamAndRole(player: string, teamId: number, role: ROLE): boolean;
     isTeamHasPlayerInRole(teamId: number, role: ROLE): boolean;
     getAllPlayersInRole(role: ROLE, teamId?: number): string[];
-    setTeamProperties(teamId: string, properties: PROPERTIES): void;
+    setTeamProperties(teamId: number, properties: PROPERTIES): void;
     getTeams(): Team<PROPERTIES>[];
 }
 
